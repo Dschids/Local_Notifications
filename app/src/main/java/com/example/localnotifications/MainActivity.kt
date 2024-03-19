@@ -23,7 +23,7 @@ import com.google.android.material.snackbar.Snackbar
 class MainActivity : AppCompatActivity() {
 
     private lateinit var notificationManager: NotificationManager
-    private var channelID = "come.example.MAD-155-Local_Notification"
+    private var channelID = "come.example.localnotifications"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,27 +32,27 @@ class MainActivity : AppCompatActivity() {
         // create notify service
         notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
-        val areNotificationsEnabled: Boolean = areNotificationsEnabled(this,channelID)
+//        val areNotificationsEnabled: Boolean = areNotificationsEnabled(this,channelID)
 
 
-        val notifyBtn = findViewById<Button>(R.id.btnNotify)
+        val notifyBtn: Button = findViewById(R.id.btnNotify)
         notifyBtn.setOnClickListener {
             // send notification
-            if (areNotificationsEnabled(this,channelID)){
-                val snackbar = Snackbar.make(it, "You need to enable App Notifications", Snackbar.LENGTH_LONG)
-                snackbar.setAction("Open Settings", View.OnClickListener {
-                    val intent = Intent(
-                        android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                        Uri.fromParts("package", packageName,null)
-                    )
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
-                })
-                snackbar.show()
-            }else{
-                sendNotification("Example Notification", "This is an example notification")
-            }
-
+//            if (areNotificationsEnabled(this,channelID)){
+//                val snackbar = Snackbar.make(it, "You need to enable App Notifications", Snackbar.LENGTH_LONG)
+//                snackbar.setAction("Open Settings", View.OnClickListener {
+//                    val intent = Intent(
+//                        android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+//                        Uri.fromParts("package", packageName,null)
+//                    )
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//                    startActivity(intent)
+//                })
+//                snackbar.show()
+//            }else{
+//                sendNotification("Example Notification", "This is an example notification")
+//            }
+            sendNotification("Example Notification", "This is an example notification")
         }
 
         // create default channel
@@ -70,7 +70,11 @@ class MainActivity : AppCompatActivity() {
         val pendingIntent = PendingIntent.getActivity(this, 0, resultIntent,
             PendingIntent.FLAG_IMMUTABLE)
         val action: Notification.Action = Notification.Action.Builder(icon, "Open", pendingIntent).build()
+        /* when you use a builder until you tell it to build it works like apply so you can input
+        a bunch of actions that it will do when it builds
+         */
         val notification = Notification.Builder(this@MainActivity, channelID)
+            // what your notification box is going to look like
             .setContentTitle(title)
             .setContentText(content)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
@@ -81,7 +85,7 @@ class MainActivity : AppCompatActivity() {
             .setNumber(notificationID)
             .build()
 
-        notificationManager.notify(notificationID,notification)
+        notificationManager?.notify(notificationID,notification)
     }
 
     // creating a default channel
@@ -96,24 +100,23 @@ class MainActivity : AppCompatActivity() {
             enableVibration(true)
             // sets the vibration pattern using an array, short, longer, short (in milliseconds)
             vibrationPattern = longArrayOf(100, 200, 100)
-
         }
         // creates the notification channel with the stuff we applied when making channel val
-        notificationManager?.createNotificationChannel(channel)
+        notificationManager.createNotificationChannel(channel)
     }
 
-    fun areNotificationsEnabled(context: Context, channelID: String?): Boolean{
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (!TextUtils.isEmpty(channelID)) {
-                val manager =
-                    context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                val channel = manager.getNotificationChannel(channelID)
-                return channel.importance == NotificationManager.IMPORTANCE_NONE
-            }
-            false
-        } else {
-            NotificationManagerCompat.from(context).areNotificationsEnabled()
-        }
-    }
+//    fun areNotificationsEnabled(context: Context, channelID: String?): Boolean{
+//        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            if (!TextUtils.isEmpty(channelID)) {
+//                val manager =
+//                    context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//                val channel = manager.getNotificationChannel(channelID)
+//                return channel.importance == NotificationManager.IMPORTANCE_NONE
+//            }
+//            false
+//        } else {
+//            NotificationManagerCompat.from(context).areNotificationsEnabled()
+//        }
+//    }
 
 }
